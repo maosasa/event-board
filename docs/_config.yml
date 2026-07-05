@@ -1,0 +1,9 @@
+# GitHub Pages Configuration
+# This file configures Jekyll settings for the GitHub Pages site
+
+theme: jekyll-theme-minimal
+title: Event Board
+description: イベント募集・参加管理サービス
+show_downloads: false
+
+# GitHub Pages will automatically build and deploy this site
