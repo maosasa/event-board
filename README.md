@@ -15,9 +15,10 @@
 ## 技術スタック
 
 - **バックエンド**: Python Flask
-- **データベース**: SQLAlchemy (SQLite)
+- **データベース**: PostgreSQL with SQLAlchemy ORM
 - **フロントエンド**: HTML, CSS, JavaScript
 - **認証**: パスワードハッシュ化 (werkzeug.security)
+- **環境管理**: python-dotenv
 
 ## ディレクトリ構成
 
@@ -25,6 +26,7 @@
 event-board/
 ├── app.py                  # Flask アプリケーションメイン
 ├── requirements.txt        # Python依存パッケージ
+├── .env.example           # 環境変数テンプレート
 ├── templates/
 │   ├── index.html         # ホームページ
 │   ├── login.html         # ログインページ
@@ -41,14 +43,68 @@ event-board/
 
 ## セットアップ手順
 
-### 1. リポジトリをクローン
+### 1. PostgreSQL のインストールと設定
+
+PostgreSQL がインストールされていることを確認してください。
+
+```bash
+# PostgreSQL サーバーの起動
+# macOS (Homebrew)
+brew services start postgresql
+
+# Linux (systemd)
+sudo systemctl start postgresql
+
+# Windows
+# PostgreSQL インストール時に設定されたサービスを起動
+```
+
+### 2. データベースの作成
+
+```bash
+# psql にログイン
+psql -U postgres
+
+# データベース作成
+CREATE DATABASE event_board;
+
+# ユーザー作成（オプション）
+CREATE USER event_user WITH PASSWORD 'your_password';
+GRANT ALL PRIVILEGES ON DATABASE event_board TO event_user;
+
+# psql を終了
+\q
+```
+
+### 3. リポジトリをクローン
 
 ```bash
 git clone https://github.com/maosasa/event-board.git
 cd event-board
 ```
 
-### 2. 仮想環境を作成
+### 4. 環境変数ファイルを作成
+
+```bash
+# .env.example をコピーして .env を作成
+cp .env.example .env
+```
+
+`.env` ファイルを編集して、PostgreSQL接続情報を設定：
+
+```env
+# Database Configuration
+DATABASE_URL=postgresql://event_user:your_password@localhost:5432/event_board
+
+# Flask Configuration
+FLASK_ENV=development
+SECRET_KEY=your-secret-key-here-change-in-production
+
+# Server Configuration
+FLASK_DEBUG=True
+```
+
+### 5. 仮想環境を作成
 
 ```bash
 python -m venv venv
@@ -60,13 +116,13 @@ venv\Scripts\activate
 source venv/bin/activate
 ```
 
-### 3. 依存パッケージをインストール
+### 6. 依存パッケージをインストール
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. アプリケーションを実行
+### 7. アプリケーションを実行
 
 ```bash
 python app.py
@@ -154,16 +210,42 @@ python app.py
 - `user_id`: ユーザーID
 - `joined_at`: 参加日時
 
+## トラブルシューティング
+
+### PostgreSQL 接続エラー
+
+```
+sqlalchemy.exc.OperationalError: could not translate host name "localhost" to address
+```
+
+**解決方法:**
+- PostgreSQL サーバーが起動していることを確認
+- DATABASE_URL の接続情報が正しいことを確認
+- ファイアウォール設定を確認
+
+### モジュールが見つからない
+
+```
+ModuleNotFoundError: No module named 'psycopg2'
+```
+
+**解決方法:**
+```bash
+pip install -r requirements.txt
+```
+
 ## セキュリティに関する注意
 
 本アプリケーションは開発用です。本番環境での使用前に以下の対策を講じてください：
 
 1. `SECRET_KEY` を強力なランダム値に変更
-2. データベースを本番用（PostgreSQL等）に変更
+2. `FLASK_ENV` を本番用に変更（`production`）
 3. HTTPSの有効化
 4. CSRF保護の実装
 5. パスワード検証の強化
 6. SQLインジェクション対策の確認
+7. `.env` ファイルを `.gitignore` に追加
+8. データベースユーザーのパスワードを強力なものに設定
 
 ## ライセンス
 
