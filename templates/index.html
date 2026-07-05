@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Board - イベント募集サービス</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <a href="/">🎉 Event Board</a>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="/" class="nav-link">ホーム</a>
+                <a href="/create-event" class="nav-link" id="createEventLink" style="display:none;">イベント作成</a>
+                <a href="#" class="nav-link" id="logoutLink" onclick="logout(event)" style="display:none;">ログアウト</a>
+                <a href="/login" class="nav-link" id="loginLink">ログイン</a>
+                <a href="/register" class="nav-link" id="registerLink">登録</a>
+            </div>
+            <div class="user-info" id="userInfo" style="display:none;">
+                <span id="username"></span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="hero">
+            <h1>イベントを検索・参加しよう</h1>
+            <p>あなたの興味あるイベントを見つけて、参加登録しましょう</p>
+        </section>
+
+        <section class="events-section">
+            <div class="filter-bar">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="search-input" 
+                    placeholder="イベント名で検索..."
+                >
+            </div>
+
+            <div class="events-grid" id="eventsGrid">
+                <div class="loading">イベントを読み込み中...</div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Event Board. All rights reserved.</p>
+    </footer>
+
+    <!-- Event Modal -->
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEventModal()">&times;</span>
+            <div id="eventDetails"></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
